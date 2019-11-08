@@ -86,3 +86,36 @@ function generate_identity(callback) {
 		console.error(err);
 	});
 }
+
+function decrypt_with_key(options, one_time_key, encrypted_message, func=null) {
+	window.crypto.subtle.decrypt(options, one_time_key, encrypted_message).then(function(decrypted_message_bytes) {
+		let decoder = new TextDecoder("utf-8");
+		let decrypted_message = decoder.decode(decrypted_message_bytes);
+		func(decrypted_message);
+	}).catch(function(err) {
+		print("Could not decrypt message.");
+		print(err);
+	});
+}
+
+function extract_one_time_key(key_data, privateKey, func=null) {
+	// AES-GCM is better, change on AES generation!!! TODO/FIXME
+	let options = {
+		name: "RSA-OAEP",
+		hash: {name: "SHA-256"},
+	}
+	
+	window.crypto.subtle.unwrapKey("raw", key_data, privateKey, options, {name: "AES-CBC", length: 256}, true, ["encrypt", "decrypt"]).then(function(one_time_key){
+		func(one_time_key);
+	}).catch(function(err){
+		console.error(err);
+	});
+}
+
+function load_private_key(private_key, func=null) {
+	window.crypto.subtle.importKey("jwk", private_key, {name: "RSA-OAEP", hash: {name: "SHA-256"}}, false, ["unwrapKey"]).then(function(privateKey){
+		func(privateKey);
+	}).catch(function(err){
+		console.error(err);
+	});
+}
