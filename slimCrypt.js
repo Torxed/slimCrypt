@@ -75,27 +75,6 @@ function generate_identity(callback) {
 		for(let key_obj in {'publicKey':true, 'privateKey':true}) {
 			window.crypto.subtle.exportKey("jwk", key[key_obj]).then(function(key_data) {
 				callback(key_obj, key_data);
-				/*
-				setTimer(key_obj+"IdentityExport", function() {
-					if(!localStorage.getItem("lock")) {
-						localStorage.setItem("lock", true);
-
-						let identity = localStorage.getItem("identity");
-						if(!identity || typeof identity === "undefined")
-							identity = {};
-						else
-							identity = JSON.parse(identity);
-
-						identity[key_obj] = key_data;
-						localStorage.setItem("identity", JSON.stringify(identity));
-
-						localStorage.removeItem("lock");
-						clearTimer(key_obj+"IdentityExport");
-					} else {
-						print(key_obj+"IdentityExport waiting for lock");
-					}
-				}, 500)
-				*/
 			}).catch(function(err){
 				console.error("Error in exporting key to identity:");
 				console.error(err);
