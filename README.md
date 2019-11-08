@@ -1,5 +1,5 @@
 # slimCrypt
-Javascript wrapper for subtle.crypto
+Javascript wrapper for [window.crypto.subtle.encrypt()](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt) using one-time-key's transmitted via private/public keypairs.
 
 # Installation
 
