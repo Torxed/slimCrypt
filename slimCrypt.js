@@ -3,13 +3,23 @@ let key_size = 256;
 
 function sizeOf(o) { return Object.keys(o).length; }
 
+function random_string(length=32) {
+	let arr = new Uint8Array(length)
+	return btoa(window.crypto.getRandomValues(arr));
+}
+
+function toHexString(byteArray) {
+	return Array.from(byteArray, function(byte) {
+		return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+	}).join('')
+}
+
 function wrap_key_in_pubkey(struct, one_time_key, publicKey, func) {
 	let options = {   //these are the algorithm options
 		name: "RSA-OAEP",
 		hash: {name: "SHA-256"}, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
 	};
 	window.crypto.subtle.importKey("jwk", publicKey, options, true, ["wrapKey"]).then(function(publicKey_loaded){
-		console.log(publicKey_loaded);
 		let options = {   //these are the wrapping key's algorithm options
 			name: "RSA-OAEP",
 			hash: {name: "SHA-256"},
@@ -54,7 +64,6 @@ function encrypt_with_key(data, key, func) {
 }
 
 function generate_identity(callback) {
-	console.log('moo');
 	/** 
 	 * Stores a identity in localStorage['identity']
 	 * SHA-256 / RSA-OAEP
